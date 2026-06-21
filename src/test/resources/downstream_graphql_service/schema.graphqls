@@ -1,0 +1,32 @@
+type Query {
+    bookById(id: ID): Book
+    authorById(id: ID): Author
+}
+
+type Mutation {
+    updateBookById(id: ID): Book
+}
+
+type Subscription {
+    subscribeToBook: Book
+}
+
+type Book {
+    id: ID
+    name: String
+    pageCount: Int
+    author: Author
+    reviews: [Review]
+}
+
+type Author {
+    id: ID
+    name: String
+    firstName: String
+    lastName: String
+    bio: String
+}
+
+type Review {
+    rating: Int
+}

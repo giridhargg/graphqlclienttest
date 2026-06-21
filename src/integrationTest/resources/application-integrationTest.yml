@@ -1,0 +1,16 @@
+---
+spring:
+  graphql:
+    schema:
+      locations: classpath*:downstream_graphql_service/** # Location of GraphQl schema files
+
+downstream_graphql_service:
+  original_host: "https://spring.io/graphql"
+  integration_test_host: "http://localhost"
+  integration_test_port: ${wiremock.server.port}
+  path: "/graphql"
+
+graphql:
+  test:
+    assets:
+      schemaLocation: "classpath*:**/*.graphqls,classpath*:**/*.graphql"

@@ -1,0 +1,114 @@
+plugins {
+	id 'java-library'
+	id 'jvm-test-suite'
+	id 'java-test-fixtures'
+	id "com.netflix.dgs.codegen" version '8.3.0'
+	id 'org.springframework.boot' version '4.0.6'
+	id 'io.spring.dependency-management' version '1.1.7'
+}
+
+group = 'io.github.giridhar'
+version = '0.0.1-SNAPSHOT'
+
+java {
+	toolchain {
+		languageVersion = JavaLanguageVersion.of(25)
+	}
+}
+
+repositories {
+	mavenCentral()
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}
+
+// 1. Define a brand new source directory for integration tests
+sourceSets {
+	integrationTest {
+		compileClasspath += main.output
+		runtimeClasspath += main.output
+	}
+}
+
+// 2. Mirror the dependencies of the main unit test scope
+configurations {
+	integrationTestImplementation.extendsFrom testImplementation
+	integrationTestRuntimeOnly.extendsFrom testRuntimeOnly
+}
+
+// 3. Register the dedicated execution task
+tasks.register('integrationTest', Test) {
+	description = 'Runs integration tests.'
+	group = 'verification'
+
+	testClassesDirs = sourceSets.integrationTest.output.classesDirs
+	classpath = sourceSets.integrationTest.runtimeClasspath
+
+	useJUnitPlatform() // Forces JUnit 5 execution
+
+	mustRunAfter tasks.named('test')
+}
+
+// 4. Hook it into the build lifecycle
+check.dependsOn integrationTest
+
+
+tasks.register("printIntegrationTestClasspath") {
+	doLast {
+		sourceSets.integrationTest.runtimeClasspath.each {
+			println it
+		}
+	}
+}
+
+dependencies {
+	implementation 'org.springframework.graphql:spring-graphql'
+	implementation 'org.springframework.boot:spring-boot-starter-webflux'
+
+	testImplementation 'org.springframework.graphql:spring-graphql'
+	testImplementation 'org.springframework.boot:spring-boot-starter-webflux'
+	testImplementation 'org.springframework.graphql:spring-graphql-test'
+	testImplementation 'org.springframework.boot:spring-boot-starter-webflux-test'
+	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+	testImplementation 'org.junit.jupiter:junit-jupiter-api'
+	testImplementation 'org.junit.jupiter:junit-jupiter:5.11.0'
+	testImplementation 'org.mockito:mockito-core'
+	testImplementation 'org.mockito:mockito-junit-jupiter'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+	integrationTestImplementation 'org.springframework.boot:spring-boot-starter-graphql'
+	integrationTestImplementation 'org.springframework.boot:spring-boot-starter-webflux'
+	integrationTestImplementation 'org.wiremock.integrations:wiremock-spring-boot:3.2.0'
+	integrationTestImplementation 'org.junit.platform:junit-platform-launcher'
+	integrationTestImplementation 'org.junit.jupiter:junit-jupiter-api'
+	integrationTestImplementation 'org.junit.jupiter:junit-jupiter:5.11.0'
+	integrationTestImplementation 'org.mockito:mockito-core'
+	integrationTestImplementation 'org.mockito:mockito-junit-jupiter'
+	integrationTestImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+	testFixturesImplementation 'org.springframework.graphql:spring-graphql'
+	testFixturesImplementation 'org.springframework.graphql:spring-graphql-test'
+	testFixturesImplementation 'org.springframework.boot:spring-boot-starter-web'
+	testFixturesImplementation 'org.springframework.boot:spring-boot-starter-webflux'
+	testFixturesImplementation 'org.springframework.boot:spring-boot-starter-webflux-test'
+	testFixturesImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testFixturesImplementation 'org.junit.jupiter:junit-jupiter-api'
+	testFixturesImplementation 'org.junit.jupiter:junit-jupiter:5.11.0'
+	testFixturesImplementation 'org.mockito:mockito-core'
+	testFixturesImplementation 'org.mockito:mockito-junit-jupiter'
+
+	testImplementation testFixtures(project(':'))
+	integrationTestImplementation testFixtures(project(':'))
+}
+
+generateJava {
+	packageName("io.github.giridhargg.graphqlclienttest.testdto")
+	setSchemaPaths(["$projectDir/src/testFixtures/resources/downstream_graphql_service/schema.graphqls"])
+	generateInterfaceSetters(false)
+	generateClientv2(true)
+	setDisableDatesInGeneratedAnnotation(true)
+	setAddGeneratedAnnotation(true)
+	generateJSpecifyAnnotations(true)
+}
