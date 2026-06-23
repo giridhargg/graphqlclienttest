@@ -2,7 +2,7 @@ package io.github.giridhargg.graphqlclienttest;
 
 import io.github.giridhargg.graphqlclienttest.httpgraphqlclient.HttpGraphQlClientTest;
 import io.github.giridhargg.graphqlclienttest.mockmanager.MockGraphQlServer;
-import io.github.giridhargg.graphqlclienttest.mockmanager.SpringGraphQlErrors;
+import io.github.giridhargg.graphqlclienttest.mockmanager.ResolvingErrors;
 import io.github.giridhargg.graphqlclienttest.mockmanager.resolvingstrategy.schemamode.SchemaNode;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,7 +37,7 @@ public class PerTypeResolutionTest {
                         Map.of("rating", 4)))
                 .and()
                 .type("Author")
-                .field("bio", env -> SpringGraphQlErrors.notFound("Bio unavailable"))
+                .field("bio", env -> ResolvingErrors.notFound("Bio unavailable"))
                 .build();
 
         graphQlServer.resolveFrom(registry);

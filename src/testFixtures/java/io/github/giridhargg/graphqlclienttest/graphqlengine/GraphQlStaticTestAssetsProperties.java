@@ -31,7 +31,7 @@ import org.springframework.boot.context.properties.bind.DefaultValue;
  */
 @ConfigurationProperties("graphql.test.assets")
 public record GraphQlStaticTestAssetsProperties(
-        @DefaultValue("classpath*:**/*.graphqls,classpath*:**/*.graphql")
+        @DefaultValue("classpath*:graphql/**/*.graphqls,classpath*:graphql/**/*.graphql")
         String schemaLocation,
         @DefaultValue("classpath:persisted-query-hashes.properties,classpath:persisted-query-hashes.yml,classpath:persisted-query-hashes.yaml")
         String persistedQueryHashesLocation,

@@ -268,7 +268,7 @@ graphql:
   test:
     assets:
       # your graphql schema location - required
-      schemaLocation: "classpath*:graphql/*.graphqls"
+      schemaLocation: "classpath*:graphql/**/*.graphqls"
       # persisted queries hashes file location - optional
       persistedQueryHashesLocation: "classpath:persisted-query-hashes.properties,classpath:persisted-query-hashes.yml,classpath:persisted-queryNode-hashes.yaml"
       # persisted graphql documents location - optional
@@ -474,10 +474,13 @@ separate manual assertion you have to remember to write.
 
 ## Persisted queries
 
-Three pieces, matched by **operation name** (see [README rule 6](README.md#6-persisted-queries-are-opt-in-and-follow-a-specific-naming-convention)
+Three pieces, matched by **document name** (see [README rule 6](README.md#6-persisted-queries-are-opt-in-and-follow-a-specific-naming-convention)
 for the full constraint):
 
 `src/test/resources/persisted-query-hashes.properties`:
+
+Format: `graphql.persisted-query.<DOCUMENT_NAME>.hash=Hash-Code-asj989808`
+
 ```properties
 graphql.persisted-query.GetBook.hash=3f5e8a1c9b2d4e6f7a8b9c0d1e2f3a4b
 ```

@@ -24,10 +24,10 @@ import java.util.List;
  * @see SpringGraphQlErrors for the spring-graphql {@link org.springframework.graphql.execution.ErrorType}
  *      equivalents (NOT_FOUND, UNAUTHORIZED, etc.)
  */
-public final class GraphQlErrors {
+final class GraphQlErrors {
 
     /** A {@link ErrorType#ValidationError} — simulates a query that fails schema validation. */
-    public static GraphQLError validationError(String message, String... path) {
+    static GraphQLError validationError(String message, String... path) {
         return GraphQLError.newError()
                 .errorType(ErrorType.ValidationError)
                 .message(message)
@@ -36,7 +36,7 @@ public final class GraphQlErrors {
     }
 
     /** A {@link ErrorType#ExecutionAborted} — simulates execution being aborted mid-request. */
-    public static GraphQLError executionAborted(String message) {
+    static GraphQLError executionAborted(String message) {
         return GraphQLError.newError()
                 .errorType(ErrorType.ExecutionAborted)
                 .message(message)
@@ -44,7 +44,7 @@ public final class GraphQlErrors {
     }
 
     /** A {@link ErrorType#DataFetchingException} — simulates an unhandled resolver-level failure. */
-    public static GraphQLError dataFetchingError(String message, String... path) {
+    static GraphQLError dataFetchingError(String message, String... path) {
         return GraphQLError.newError()
                 .errorType(ErrorType.DataFetchingException)
                 .message(message)
@@ -53,7 +53,7 @@ public final class GraphQlErrors {
     }
 
     /** An error with an arbitrary {@link ErrorClassification}, for simulating a downstream server's own error codes. */
-    public static GraphQLError custom(String message, ErrorClassification classification, String... path) {
+    static GraphQLError custom(String message, ErrorClassification classification, String... path) {
         return GraphQLError.newError()
                 .errorType(classification)
                 .message(message)

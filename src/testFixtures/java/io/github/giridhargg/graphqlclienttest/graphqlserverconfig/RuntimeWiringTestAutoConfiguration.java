@@ -21,12 +21,6 @@ import org.springframework.graphql.server.WebGraphQlInterceptor;
  * running Spring GraphQL server, for use by
  * {@link EnableGraphQlServerTestConfiguration @EnableGraphQlServerTestConfiguration}.
  *
- * <p><b>Important:</b> this configuration is only activated under the Spring profile named
- * {@code "integrationTest"} (see {@link Profile @Profile} below). Test classes using
- * {@code @EnableGraphQlServerTestConfiguration} must activate that exact profile — typically via
- * {@code @ActiveProfiles("integrationTest")} — or none of these beans will be registered and the
- * local GraphQL server will run with no data fetchers wired in.</p>
- *
  * <p>As with {@link io.github.giridhargg.graphqlclienttest.httpgraphqlclient.HttpGraphQlClientTestAutoConfiguration},
  * the {@link RuntimeWiringConfigurer} built here registers the unified mock-backed
  * {@link DataFetcher} for <em>every</em> field of <em>every</em> non-introspection object type in
@@ -45,7 +39,6 @@ import org.springframework.graphql.server.WebGraphQlInterceptor;
  * </ul>
  */
 @TestConfiguration
-@Profile("integrationTest")
 @EnableConfigurationProperties(GraphQlStaticTestAssetsProperties.class)
 class RuntimeWiringTestAutoConfiguration {
 

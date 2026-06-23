@@ -6,10 +6,14 @@ import org.springframework.graphql.client.ClientGraphQlResponse;
 import org.springframework.graphql.client.GraphQlClientInterceptor;
 import reactor.core.publisher.Mono;
 
+/**
+ * {@link GraphQlClientInterceptor} that wraps the {@link ClientGraphQlRequest} with
+ * {@link PersistedQueryCompatibleGraphQlRequest}
+ */
 public class PersistedQueryInterceptor implements GraphQlClientInterceptor {
+
     public @NonNull Mono<ClientGraphQlResponse> intercept(
             @NonNull ClientGraphQlRequest request, Chain chain) {
-        var pqRequest = new PersistedQueryCompatibleGraphQlRequest(request);
-        return chain.next(pqRequest);
+        return chain.next(new PersistedQueryCompatibleGraphQlRequest(request));
     }
 }

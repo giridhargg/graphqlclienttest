@@ -2,7 +2,7 @@
 spring:
   graphql:
     schema:
-      locations: classpath*:downstream_graphql_service/** # Location of GraphQl schema files
+      locations: classpath*:graphql/** # Location of GraphQl schema files
 
 downstream_graphql_service:
   original_host: "https://spring.io/graphql"
@@ -13,4 +13,4 @@ downstream_graphql_service:
 graphql:
   test:
     assets:
-      schemaLocation: "classpath*:**/*.graphqls,classpath*:**/*.graphql"
+      schemaLocation: "classpath*:graphql/**/*.graphqls,classpath*:graphql/**/*.graphql"

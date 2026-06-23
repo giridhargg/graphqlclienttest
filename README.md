@@ -68,7 +68,6 @@ before every test method.
 
 ```java
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@ActiveProfiles("integrationTest")
 @EnableWireMock // enables wiremock server
 @EnableGraphQlServerTestConfiguration // brings graphql-server auto-configuration
 class BookServiceIntegrationTest {
@@ -102,22 +101,14 @@ class BookServiceIntegrationTest {
 ```
 
 A real Spring GraphQL server starts locally, on a random port, and serves every request through
-the same `MockGraphQlServer` stubbing API. `@ActiveProfiles("integrationTest")` is **required** —
-see [rule 1](#1-activeprofilesintegrationtest-is-mandatory) below.
+the same `MockGraphQlServer` stubbing API. Note that `@EnableGraphQlServerTestConfiguration` doesn't bring
+any graphql-client beans. Its `@SpringBootTest`'s responsibility to autowire all of those.
 
 ## Rules consumers must follow
 
 These aren't suggestions — skipping any of them will produce confusing failures (usually "no data
 fetcher wired" or "schema not found" type errors) rather than a clear error message pointing at
 the missing step.
-
-### 1. `@ActiveProfiles("integrationTest")` is mandatory
-
-`@EnableGraphQlServerTestConfiguration`'s beans are gated behind `@Profile("integrationTest")`. If
-the test class doesn't activate that exact profile name, **none of this library's wiring is
-registered** — your local server starts but has no data fetchers, and every query returns `null`
-for every field with no error explaining why. `@HttpGraphQlClientTest` has no such requirement;
-this only applies to the real-server integration style.
 
 ### 2. Don't register your own `@SchemaMapping` resolvers against the test schema
 
@@ -130,8 +121,10 @@ data fetcher being registered twice, or your stubs silently being ignored).
 
 ### 3. Schema discovery is automatic — know where it looks
 
+https://docs.spring.io/spring-boot/reference/web/spring-graphql.html
+
 By default, the schema is discovered from any `*.graphqls`/`*.graphql` file found anywhere on the
-test classpath (`classpath*:**/*.graphqls,classpath*:**/*.graphql`). Multiple matching files are
+test classpath (`classpath*:graphql/**/*.graphqls,classpath*:graphql/**/*.graphql`). Multiple matching files are
 merged via schema stitching — useful for splitting a large schema across files, but it means two
 files defining the same type will fail to merge. Override the location via the
 `graphql.test.assets.schema-location` property (comma-separated patterns supported) if your schema

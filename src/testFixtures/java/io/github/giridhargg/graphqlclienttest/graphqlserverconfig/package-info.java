@@ -11,11 +11,6 @@
  * in-memory with no real server or network involved. Both expose the same consumer-facing
  * {@link io.github.giridhargg.graphqlclienttest.mockmanager.MockGraphQlServer} stubbing API.</p>
  *
- * <p><strong>Required:</strong> the beans in this package only activate under the Spring profile
- * named {@code "integrationTest"} — test classes must declare
- * {@code @ActiveProfiles("integrationTest")} alongside {@code @EnableGraphQlServerTestConfiguration},
- * or none of this wiring is registered.</p>
- *
  * @see io.github.giridhargg.graphqlclienttest.graphqlserverconfig.RuntimeWiringTestAutoConfiguration
  */
 package io.github.giridhargg.graphqlclienttest.graphqlserverconfig;

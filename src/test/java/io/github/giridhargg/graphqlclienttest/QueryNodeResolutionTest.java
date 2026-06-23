@@ -2,9 +2,8 @@ package io.github.giridhargg.graphqlclienttest;
 
 import graphql.ErrorType;
 import io.github.giridhargg.graphqlclienttest.httpgraphqlclient.HttpGraphQlClientTest;
-import io.github.giridhargg.graphqlclienttest.mockmanager.GraphQlErrors;
 import io.github.giridhargg.graphqlclienttest.mockmanager.MockGraphQlServer;
-import io.github.giridhargg.graphqlclienttest.mockmanager.SpringGraphQlErrors;
+import io.github.giridhargg.graphqlclienttest.mockmanager.ResolvingErrors;
 import io.github.giridhargg.graphqlclienttest.mockmanager.resolvingstrategy.querymode.QueryNode;
 import io.github.giridhargg.graphqlclienttest.mockmanager.resolvingstrategy.schemamode.SchemaNode;
 import org.jspecify.annotations.Nullable;
@@ -170,10 +169,10 @@ class QueryNodeResolutionTest {
                 .field("name", "Test Book")
                 .field("author", object()
                         .field("name", "Jane Doe")
-                        .field("bio", SpringGraphQlErrors.notFound("Bio unavailable")))
+                        .field("bio", ResolvingErrors.notFound("Bio unavailable")))
                 .field("reviews", list(
                         object().field("rating", 5),
-                        object().field("rating", GraphQlErrors.dataFetchingError("Review failed")))));
+                        object().field("rating", ResolvingErrors.dataFetchingError("Review failed")))));
 
         graphQlServer.resolveFrom(bookTree);
 
@@ -239,7 +238,7 @@ class QueryNodeResolutionTest {
                         Map.of("rating", 4)))
                 .and()
                 .type("Author")
-                .field("bio", env -> SpringGraphQlErrors.notFound("Bio unavailable"))
+                .field("bio", env -> ResolvingErrors.notFound("Bio unavailable"))
                 .build();
 
         graphQlServer.resolveFrom(registry);

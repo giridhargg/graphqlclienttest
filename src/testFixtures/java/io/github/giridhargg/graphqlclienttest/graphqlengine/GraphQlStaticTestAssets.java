@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Properties;
@@ -200,7 +201,7 @@ public class GraphQlStaticTestAssets {
                 var registry = new TypeDefinitionRegistry();
                 var parser = new SchemaParser();
                 var matched = false;
-                var seenUrls = new java.util.HashSet<String>();
+                var seenUrls = new HashSet<String>();
 
                 for (var pattern : location.split(",")) {
                     var trimmed = pattern.trim();
