@@ -14,7 +14,6 @@ type Subscription {
 type Book {
     id: ID
     name: String
-    pageCount: Int
     author: Author
     reviews: [Review]
 }
@@ -22,8 +21,6 @@ type Book {
 type Author {
     id: ID
     name: String
-    firstName: String
-    lastName: String
     bio: String
 }
 

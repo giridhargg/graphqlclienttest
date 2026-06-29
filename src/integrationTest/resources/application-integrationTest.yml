@@ -13,4 +13,4 @@ downstream_graphql_service:
 graphql:
   test:
     assets:
-      schemaLocation: "classpath*:graphql/**/*.graphqls,classpath*:graphql/**/*.graphql"
+      schemaLocation: "classpath*:graphql/**/*.graphqls,classpath*:graphql/**/*.graphql,classpath*:graphql/**/*.gqls,classpath*:graphql/**/*.gql"

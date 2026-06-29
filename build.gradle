@@ -1,10 +1,11 @@
 plugins {
+	id 'checkstyle'
 	id 'java-library'
 	id 'jvm-test-suite'
 	id 'java-test-fixtures'
-	id "com.netflix.dgs.codegen" version '8.3.0'
 	id 'org.springframework.boot' version '4.0.6'
 	id 'io.spring.dependency-management' version '1.1.7'
+	id "com.diffplug.spotless" version "7.2.1"
 }
 
 group = 'io.github.giridhar'
@@ -54,61 +55,83 @@ tasks.register('integrationTest', Test) {
 // 4. Hook it into the build lifecycle
 check.dependsOn integrationTest
 
+spotless {
+	java {
+		eclipse().configFile(".config/formatter/eclipse-java-google-style.xml")
 
-tasks.register("printIntegrationTestClasspath") {
-	doLast {
-		sourceSets.integrationTest.runtimeClasspath.each {
-			println it
-		}
+		importOrder(
+				"java",
+				"javax",
+				"jakarta",
+				"org",
+				"com",
+				""
+		)
+
+        googleJavaFormat("1.30.0")
+        removeUnusedImports()
+		trimTrailingWhitespace()
+		endWithNewline()
 	}
 }
 
-dependencies {
-	implementation 'org.springframework.graphql:spring-graphql'
-	implementation 'org.springframework.boot:spring-boot-starter-webflux'
-
-	testImplementation 'org.springframework.graphql:spring-graphql'
-	testImplementation 'org.springframework.boot:spring-boot-starter-webflux'
-	testImplementation 'org.springframework.graphql:spring-graphql-test'
-	testImplementation 'org.springframework.boot:spring-boot-starter-webflux-test'
-	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-	testImplementation 'org.junit.jupiter:junit-jupiter-api'
-	testImplementation 'org.junit.jupiter:junit-jupiter:5.11.0'
-	testImplementation 'org.mockito:mockito-core'
-	testImplementation 'org.mockito:mockito-junit-jupiter'
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-
-	integrationTestImplementation 'org.springframework.boot:spring-boot-starter-graphql'
-	integrationTestImplementation 'org.springframework.boot:spring-boot-starter-webflux'
-	integrationTestImplementation 'org.wiremock.integrations:wiremock-spring-boot:3.2.0'
-	integrationTestImplementation 'org.junit.platform:junit-platform-launcher'
-	integrationTestImplementation 'org.junit.jupiter:junit-jupiter-api'
-	integrationTestImplementation 'org.junit.jupiter:junit-jupiter:5.11.0'
-	integrationTestImplementation 'org.mockito:mockito-core'
-	integrationTestImplementation 'org.mockito:mockito-junit-jupiter'
-	integrationTestImplementation 'org.springframework.boot:spring-boot-starter-test'
-
-	testFixturesImplementation 'org.springframework.graphql:spring-graphql'
-	testFixturesImplementation 'org.springframework.graphql:spring-graphql-test'
-	testFixturesImplementation 'org.springframework.boot:spring-boot-starter-web'
-	testFixturesImplementation 'org.springframework.boot:spring-boot-starter-webflux'
-	testFixturesImplementation 'org.springframework.boot:spring-boot-starter-webflux-test'
-	testFixturesImplementation 'org.springframework.boot:spring-boot-starter-test'
-	testFixturesImplementation 'org.junit.jupiter:junit-jupiter-api'
-	testFixturesImplementation 'org.junit.jupiter:junit-jupiter:5.11.0'
-	testFixturesImplementation 'org.mockito:mockito-core'
-	testFixturesImplementation 'org.mockito:mockito-junit-jupiter'
-
-	testImplementation testFixtures(project(':'))
-	integrationTestImplementation testFixtures(project(':'))
+checkstyle {
+	toolVersion = "13.7.0"
+	configFile = file("${rootDir}/.config/checkstyle/google_checks.xml") // Rules path
+	ignoreFailures = false                  // Set to true if you don't want violations to break the build
+	maxWarnings = 0                         // Treat warnings as errors to keep code perfectly clean
 }
 
-generateJava {
-	packageName("io.github.giridhargg.graphqlclienttest.testdto")
-	setSchemaPaths(["$projectDir/src/testFixtures/resources/downstream_graphql_service/schema.graphqls"])
-	generateInterfaceSetters(false)
-	generateClientv2(true)
-	setDisableDatesInGeneratedAnnotation(true)
-	setAddGeneratedAnnotation(true)
-	generateJSpecifyAnnotations(true)
+tasks.withType(Checkstyle).configureEach {
+	reports {
+		xml.required = true                 // Generates XML report for CI/CD tools
+		html.required = true                // Generates readable HTML report for developers
+	}
+}
+
+//tasks.register("printIntegrationTestClasspath") {
+//	doLast {
+//		sourceSets.integrationTest.runtimeClasspath.each {
+//			println it
+//		}
+//	}
+//}
+
+dependencies {
+	implementation("org.springframework.boot:spring-boot-autoconfigure")
+
+	testRuntimeOnly ("org.junit.platform:junit-platform-launcher")
+	testImplementation("org.springframework.graphql:spring-graphql")
+	testImplementation("org.springframework.boot:spring-boot-starter-webflux")
+	testImplementation("org.springframework.graphql:spring-graphql-test")
+	testImplementation("org.springframework.boot:spring-boot-starter-webflux-test")
+	testImplementation("org.junit.jupiter:junit-jupiter-api")
+	testImplementation("org.junit.jupiter:junit-jupiter:5.11.0")
+	testImplementation("org.mockito:mockito-core")
+	testImplementation("org.mockito:mockito-junit-jupiter")
+	testImplementation("org.springframework.boot:spring-boot-starter-test")
+
+	integrationTestImplementation("org.springframework.boot:spring-boot-starter-graphql")
+	integrationTestImplementation("org.springframework.boot:spring-boot-starter-webflux")
+	integrationTestImplementation("org.wiremock.integrations:wiremock-spring-boot:3.2.0")
+	integrationTestImplementation("org.junit.platform:junit-platform-launcher")
+	integrationTestImplementation("org.junit.jupiter:junit-jupiter-api")
+	integrationTestImplementation("org.junit.jupiter:junit-jupiter:5.11.0")
+	integrationTestImplementation("org.mockito:mockito-core")
+	integrationTestImplementation("org.mockito:mockito-junit-jupiter")
+	integrationTestImplementation("org.springframework.boot:spring-boot-starter-test")
+
+	testFixturesImplementation("org.springframework.boot:spring-boot-starter-graphql")
+	testFixturesImplementation("org.springframework.graphql:spring-graphql-test")
+	testFixturesImplementation("org.springframework.boot:spring-boot-starter-web")
+	testFixturesImplementation("org.springframework.boot:spring-boot-starter-webflux")
+	testFixturesImplementation("org.springframework.boot:spring-boot-starter-webflux-test")
+	testFixturesImplementation("org.springframework.boot:spring-boot-starter-test")
+	testFixturesImplementation("org.junit.jupiter:junit-jupiter-api")
+	testFixturesImplementation("org.junit.jupiter:junit-jupiter:5.11.0")
+	testFixturesImplementation("org.mockito:mockito-core")
+	testFixturesImplementation("org.mockito:mockito-junit-jupiter")
+
+	testImplementation(testFixtures(project(':')))
+	integrationTestImplementation(testFixtures(project(':')))
 }

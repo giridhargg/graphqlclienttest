@@ -270,7 +270,7 @@ graphql:
       # your graphql schema location - required
       schemaLocation: "classpath*:graphql/**/*.graphqls"
       # persisted queries hashes file location - optional
-      persistedQueryHashesLocation: "classpath:persisted-query-hashes.properties,classpath:persisted-query-hashes.yml,classpath:persisted-queryNode-hashes.yaml"
+      persistedQueryHashesLocation: "classpath:persisted-query-hashes.properties,classpath:persisted-query-hashes.yml,classpath:persisted-graphNode-hashes.yaml"
       # persisted graphql documents location - optional
       persistedQueriesPattern: 'classpath*:persisted-queries/*.gql'
 ```
